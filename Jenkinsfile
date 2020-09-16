@@ -1,16 +1,6 @@
 pipeline {
-
-  environment {
-    registry = "http://192.168.1.10:5000/justme/myweb"
-    registryCredential = 'dockerid'
-    dockerImage = ""
-    
-  }
-
   agent any
-
   stages {
-
     stage('Checkout Source') {
       steps {
         git 'https://github.com/justmeandopensource/playjenkins.git'
@@ -18,20 +8,22 @@ pipeline {
     }
 
     stage('Build image') {
-      steps{
+      steps {
         script {
           dockerImage = docker.build registry + ":$BUILD_NUMBER"
         }
+
       }
     }
 
     stage('Push Image') {
-      steps{
+      steps {
         script {
           docker.withRegistry( "" ) {
             dockerImage.push()
           }
         }
+
       }
     }
 
@@ -40,9 +32,14 @@ pipeline {
         script {
           kubernetesDeploy(configs: "myweb.yaml", kubeconfigId: "mykubeconfig")
         }
+
       }
     }
 
   }
-
+  environment {
+    registry = 'http://192.168.1.10:5000/justme/myweb'
+    registryCredential = 'dockerid'
+    dockerImage = ''
+  }
 }
