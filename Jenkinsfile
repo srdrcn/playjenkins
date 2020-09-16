@@ -1,8 +1,10 @@
 pipeline {
 
   environment {
-    registry = "192.168.1.81:5000/justme/myweb"
+    registry = "http://192.168.1.10:5000/justme/myweb"
+    registryCredential = 'dockerid'
     dockerImage = ""
+    
   }
 
   agent any
